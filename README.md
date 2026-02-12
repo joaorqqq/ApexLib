@@ -65,7 +65,7 @@ MainTab:AddInput({
         loadstring(texto)()
     end
 })
-🎨 Lista de Cores Suportadas
+## 🎨 Lista de Cores Suportadas
 A Apex suporta mais de 40 cores. Algumas das favoritas:
 Quentes: Escarlate, Carmesim, Âmbar, Dourado, Vinho.
 Frias: Esmeralda, Turquesa, Marinho, Celeste, Teal.
