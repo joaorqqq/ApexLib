@@ -89,6 +89,25 @@ function Apex:CreateWindow(config)
 
     MakeDraggable(TabBar, Main)
 
+    -- BOTÃO DE INFO E SEGURANÇA
+    local InfoBtn = Instance.new("TextButton", Main)
+    InfoBtn.Size = UDim2.new(0, 20, 0, 20); InfoBtn.Position = UDim2.new(1, -25, 0, 10)
+    InfoBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30); InfoBtn.Text = "i"; InfoBtn.TextColor3 = Color3.new(1, 1, 1)
+    InfoBtn.Font = Enum.Font.GothamBold; Instance.new("UICorner", InfoBtn).CornerRadius = UDim.new(1, 0)
+
+    local InfoFrame = Instance.new("Frame", Main)
+    InfoFrame.Size = UDim2.new(0.8, 0, 0.6, 0); InfoFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
+    InfoFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15); InfoFrame.Visible = false; InfoFrame.ZIndex = 20; Instance.new("UICorner", InfoFrame)
+
+    local InfoText = Instance.new("TextLabel", InfoFrame)
+    InfoText.Size = UDim2.new(1, -20, 1, -20); InfoText.Position = UDim2.new(0, 10, 0, 10); InfoText.BackgroundTransparency = 1; InfoText.TextColor3 = Color3.new(1, 1, 1); InfoText.Font = "GothamMedium"; InfoText.TextWrapped = true; InfoText.ZIndex = 21
+    InfoText.Text = "🌑 APEX ELITE v1.0\n\nDesenvolvido por: joaorqqq\n\n⚠️ AVISO: A UI não causa banimento, mas sim o que você faz com ela. Use scripts de fontes confiáveis. O risco está nas funções ativadas, não na interface."
+
+    InfoBtn.MouseButton1Click:Connect(function() InfoFrame.Visible = not InfoFrame.Visible end)
+    local CloseInfo = Instance.new("TextButton", InfoFrame)
+    CloseInfo.Size = UDim2.new(1, 0, 1, 0); CloseInfo.BackgroundTransparency = 1; CloseInfo.Text = ""; CloseInfo.ZIndex = 20
+    CloseInfo.MouseButton1Click:Connect(function() InfoFrame.Visible = false end)
+
     SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
         local txt = SearchBar.Text:lower()
         for _, item in pairs(Container:GetDescendants()) do
@@ -106,75 +125,6 @@ function Apex:CreateWindow(config)
         Page.Size = UDim2.new(1, -20, 1, -10); Page.Position = UDim2.new(0, 10, 0, 0)
         Page.BackgroundTransparency = 1; Page.Visible = false; Page.ScrollBarThickness = 0
         Instance.new("UIListLayout", Page).Padding = UDim.new(0, 8)
-
-        local TBtn = Instance.new("TextButton", TabBar)
-        TBtn.Size = UDim2.new(0, 110, 1, 0); TBtn.Text = name; TBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        TBtn.TextColor3 = Color3.new(1,1,1); TBtn.Font = Enum.Font.GothamMedium; Instance.new("UICorner", TBtn)
-
-        TBtn.MouseButton1Click:Connect(function()
-            for _, v in pairs(Container:GetChildren()) do v.Visible = false end
-            for _, b in pairs(TabBar:GetChildren()) do if b:IsA("TextButton") then b.BackgroundColor3 = Color3.fromRGB(30, 30, 30) end end
-            Page.Visible = true; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        end)
-
-        function tabObj:AddButton(data)
-            local cor = ColorMap[string.lower(data.Color or "preto")] or ColorMap["preto"]
-            local b = Instance.new("TextButton", Page)
-            b.Size = UDim2.new(0.95, 0, 0, 45); b.BackgroundColor3 = cor; b.Text = data.Title
-            b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; Instance.new("UICorner", b)
-            local Aspect = Instance.new("UIAspectRatioConstraint", b); Aspect.AspectRatio = 8
-            b.MouseButton1Click:Connect(data.Callback)
-        end
-
-        function tabObj:AddToggle(data)
-            local state = data.Default or false
-            local tFrame = Instance.new("Frame", Page)
-            tFrame.Size = UDim2.new(0.95, 0, 0, 45); tFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", tFrame)
-            local Aspect = Instance.new("UIAspectRatioConstraint", tFrame); Aspect.AspectRatio = 8
-            local label = Instance.new("TextLabel", tFrame)
-            label.Text = "  " .. data.Title; label.Size = UDim2.new(0.7, 0, 1, 0); label.BackgroundTransparency = 1; label.TextColor3 = Color3.new(1,1,1); label.Font = "GothamMedium"; label.TextXAlignment = "Left"
-            local switch = Instance.new("TextButton", tFrame)
-            switch.Size = UDim2.new(0, 40, 0, 20); switch.Position = UDim2.new(0.85, 0, 0.25, 0); switch.Text = ""
-            switch.BackgroundColor3 = state and Color3.fromRGB(0, 255, 136) or Color3.fromRGB(45, 45, 45); Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
-            switch.MouseButton1Click:Connect(function()
-                state = not state; TweenService:Create(switch, info, {BackgroundColor3 = state and Color3.fromRGB(0, 255, 136) or Color3.fromRGB(45, 45, 45)}):Play(); data.Callback(state)
-            end)
-        end
-
-        function tabObj:AddSlider(data)
-            local sFrame = Instance.new("Frame", Page)
-            sFrame.Size = UDim2.new(0.95, 0, 0, 50); sFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", sFrame)
-            local Aspect = Instance.new("UIAspectRatioConstraint", sFrame); Aspect.AspectRatio = 7
-            local title = Instance.new("TextLabel", sFrame)
-            title.Text = "  " .. data.Title .. ": " .. data.Default; title.Size = UDim2.new(1, 0, 0.5, 0); title.BackgroundTransparency = 1; title.TextColor3 = Color3.new(1,1,1); title.TextXAlignment = "Left"
-            local bar = Instance.new("Frame", sFrame)
-            bar.Size = UDim2.new(0.9, 0, 0, 6); bar.Position = UDim2.new(0.05, 0, 0.7, 0); bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45); Instance.new("UICorner", bar)
-            local fill = Instance.new("Frame", bar)
-            fill.Size = UDim2.new((data.Default - data.Min) / (data.Max - data.Min), 0, 1, 0); fill.BackgroundColor3 = Color3.fromRGB(0, 255, 136); Instance.new("UICorner", fill)
-            local function update(input)
-                local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-                local val = math.floor(data.Min + (data.Max - data.Min) * pos); fill.Size = UDim2.new(pos, 0, 1, 0); title.Text = "  " .. data.Title .. ": " .. val; data.Callback(val)
-            end
-            bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
-                local conn = UIS.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then update(input) end end)
-                UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then conn:Disconnect() end end)
-            end end)
-        end
-
-        function tabObj:AddInput(data)
-            local box = Instance.new("TextBox", Page)
-            box.Size = UDim2.new(0.95, 0, 0, data.Height or 150); box.BackgroundColor3 = Color3.fromRGB(18, 18, 18); box.Text = ""
-            box.PlaceholderText = data.Placeholder or "Script aqui..."; box.MultiLine = true; box.Font = Enum.Font.Code; box.TextColor3 = Color3.new(1,1,1); box.TextYAlignment = "Top"; box.TextXAlignment = "Left"; Instance.new("UICorner", box)
-            box.FocusLost:Connect(function() data.Callback(box.Text) end)
-        end
-
-        if not self.CurrentTab then Page.Visible = true; self.CurrentTab = Page; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) end
-        return tabObj
-    end
-    return self
-end
-
-return Apex
 
         local TBtn = Instance.new("TextButton", TabBar)
         TBtn.Size = UDim2.new(0, 110, 1, 0); TBtn.Text = name; TBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
