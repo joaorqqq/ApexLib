@@ -2,7 +2,15 @@
 # 🌑 Apex Elite Library v1.0
 
 A **Apex Elite** é uma biblioteca de interface (UI) premium desenvolvida para ser leve, moderna e extremamente funcional. Projetada especificamente para o ecossistema do Roblox, ela oferece suporte total para **Mobilianos** (Mobile) e **Robloxianos** (PC).
-
+## 🎨 Lista de Cores Suportadas
+A Apex suporta mais de 40 cores. Algumas das favoritas:
+Quentes: Escarlate, Carmesim, Âmbar, Dourado, Vinho.
+Frias: Esmeralda, Turquesa, Marinho, Celeste, Teal.
+Místicas: Violeta, Lavanda, Magenta, Coral.
+Neutras: Grafite, Pérola, Marfim, Prata.
+👨‍💻 Créditos
+Desenvolvido por joaorqqq.
+Focado em trazer a melhor experiência para a comunidade de mobilianos e robloxianos.
 ---
 
 ## ✨ Diferenciais da Apex
@@ -65,12 +73,4 @@ MainTab:AddInput({
         loadstring(texto)()
     end
 })
-## 🎨 Lista de Cores Suportadas
-A Apex suporta mais de 40 cores. Algumas das favoritas:
-Quentes: Escarlate, Carmesim, Âmbar, Dourado, Vinho.
-Frias: Esmeralda, Turquesa, Marinho, Celeste, Teal.
-Místicas: Violeta, Lavanda, Magenta, Coral.
-Neutras: Grafite, Pérola, Marfim, Prata.
-👨‍💻 Créditos
-Desenvolvido por joaorqqq.
-Focado em trazer a melhor experiência para a comunidade de mobilianos e robloxianos.
+
