@@ -36,9 +36,7 @@ local Window = Apex:CreateWindow({
 
 local MainTab = Window:AddTab("Principal")
 
-🛠️ Componentes e Exemplos
-🔘 Botões com Cores Customizadas
-Você não precisa de RGB. Use o nome da cor!
+-- 🔘 Botões com Cores Customizadas
 MainTab:AddButton({
     Title = "Matar Todos",
     Color = "Carmesim",
@@ -46,7 +44,8 @@ MainTab:AddButton({
         print("Comando executado!")
     end
 })
-🔘 Interruptores (Toggle)
+
+-- 🔘 Interruptores (Toggle)
 MainTab:AddToggle({
     Title = "Auto Farm",
     Default = false,
@@ -54,7 +53,8 @@ MainTab:AddToggle({
         print("Status do Farm:", state)
     end
 })
-🔘 Ajustes (Slider)
+
+-- 🔘 Ajustes (Slider)
 MainTab:AddSlider({
     Title = "Velocidade",
     Min = 16,
@@ -64,8 +64,8 @@ MainTab:AddSlider({
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = valor
     end
 })
-🔘 Campo de Script (Input)
-Ideal para fazer um executor interno no seu script.
+
+-- 🔘 Campo de Script (Input)
 MainTab:AddInput({
     Placeholder = "-- Cole seu script aqui...",
     Height = 180,
@@ -73,4 +73,3 @@ MainTab:AddInput({
         loadstring(texto)()
     end
 })
-
