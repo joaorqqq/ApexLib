@@ -73,3 +73,23 @@ MainTab:AddInput({
         loadstring(texto)()
     end
 })
+---
+
+## ❓ FAQ - Perguntas Frequentes
+
+### 1. Como eu abro/fecho o menu?
+Atualmente, a Apex Elite permanece aberta. Em atualizações futuras, traremos um botão de minimizar exclusivo para mobilianos.
+
+### 2. Funciona em quais executores?
+Otimizada para **Delta, Codex, Arceus X, Fluxus** e executores de PC. Se suporta `game:HttpGet`, a Apex roda!
+
+### 3. A UI causa banimento?
+**Não.** A UI é apenas visual. O banimento ocorre pelo que você faz com ela (os scripts que executa). Use com responsabilidade.
+
+### 4. Como funcionam as cores?
+Basta digitar o nome em português (ex: `Color = "Esmeralda"`). A Apex traduz automaticamente para o robloxiano.
+
+### 5. Quem desenvolveu?
+Projeto mantido integralmente por **joaorqqq**.
+
+---
