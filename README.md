@@ -4,12 +4,32 @@ A **Apex Elite** é uma biblioteca de interface (UI) premium desenvolvida para s
 
 ---
 
+## 🎨 Lista de Cores Suportadas
+
+A Apex suporta mais de 40 cores. Algumas das favoritas:
+* **Quentes:** Escarlate, Carmesim, Âmbar, Dourado, Vinho.
+* **Frias:** Esmeralda, Turquesa, Marinho, Celeste, Teal.
+* **Místicas:** Violeta, Lavanda, Magenta, Coral.
+* **Neutras:** Grafite, Pérola, Marfim, Prata.
+
+---
+
+## ✨ Diferenciais da Apex
+
+* **🔍 Busca em Tempo Real:** Filtre comandos instantaneamente através da barra de busca integrada.
+* **🎨 Motor de Cores Poético:** Utilize nomes de cores em português como `Esmeralda`, `Carmesim`, `Vinho`, `Dourado` e `Turquesa`.
+* **📐 Interface Adaptável:** Sistema de redimensionamento dinâmico (Resize) e arraste (Draggable).
+* **💻 Executor Hub:** Componente de Input otimizado para a criação de executores de scripts in-game.
+* **⚡ Otimização:** Feita em TweenService para animações suaves sem causar lag.
+
+---
+
 ## 🚀 Como Usar
 
 Para utilizar a biblioteca no seu script, basta usar o carregador oficial (Loader):
 
 ```lua
-local Apex = loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/Loader.lua"))()
+local Apex = loadstring(game:HttpGet("[https://raw.githubusercontent.com/joaorqqq/ApexLib/main/Loader.lua](https://raw.githubusercontent.com/joaorqqq/ApexLib/main/Loader.lua)"))()
 
 local Window = Apex:CreateWindow({
     Title = "Apex Elite Hub"
@@ -26,6 +46,26 @@ MainTab:AddButton({
     end
 })
 
+-- 🔘 Interruptores (Toggle)
+MainTab:AddToggle({
+    Title = "Auto Farm",
+    Default = false,
+    Callback = function(state)
+        print("Status do Farm:", state)
+    end
+})
+
+-- 🔘 Ajustes (Slider)
+MainTab:AddSlider({
+    Title = "Velocidade",
+    Min = 16,
+    Max = 300,
+    Default = 16,
+    Callback = function(valor)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = valor
+    end
+})
+
 -- 🔘 Campo de Script (Input)
 MainTab:AddInput({
     Placeholder = "-- Cole seu script aqui...",
@@ -34,6 +74,7 @@ MainTab:AddInput({
         loadstring(texto)()
     end
 })
+
 ```
  FAQ - Perguntas Frequentes
 1. Como eu abro/fecho o menu? Atualmente, a Apex Elite permanece aberta. Em atualizações futuras, traremos um botão de minimizar exclusivo para mobilianos.
