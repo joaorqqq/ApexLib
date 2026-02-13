@@ -10,7 +10,7 @@ local LocalPlayer = Players.LocalPlayer
 
 -- [[ CARREGAR BIBLIOTECA APEX ]]
 local Success, ApexLib = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/loader.lua"))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/ApexLib.lua"))()
 end)
 
 if not Success then return end
