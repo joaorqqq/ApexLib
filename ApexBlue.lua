@@ -4,13 +4,13 @@
     Base: Apex Elite Library v1
 --]]
 
--- Carregando o seu Loader do GitHub
+-- Carregando o teu Loader do GitHub
 local Success, ApexLib = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/loader.lua"))()
 end)
 
 if not Success then
-    warn("APEX ERROR: Não foi possível carregar o loader.lua. Verifique se o arquivo está no GitHub!")
+    warn("APEX ERROR: Não foi possível carregar o loader.lua. Verifica se o arquivo está no GitHub!")
     return
 end
 
@@ -27,7 +27,7 @@ local scriptToExecute = ""
 
 MainTab:AddTextBox({
     Title = "Editor de Script",
-    Placeholder = "Cole seu script aqui, robloxiano...",
+    Placeholder = "Cola o teu script aqui, robloxiano...",
     Height = 120,
     Callback = function(text)
         scriptToExecute = text
@@ -49,14 +49,15 @@ MainTab:AddButton({
     end
 })
 
--- [[ ABA DE SCRIPTS (GHOSTHUB) ]]
+-- [[ ABA DE SCRIPTS ]]
 local ScriptTab = Window:AddTab("Scripts")
 
+-- HUB DO FTAP COM 5000KM E BLOBMAN KICK
 ScriptTab:AddButton({
-    Title = "👻 GhostHub (Blox Fruit)",
-    Color = "celeste",
+    Title = "🌪️ FTAP Hub (5000km & Kick)",
+    Color = "blue",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/Ghosthub.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/FTAPHub.lua"))()
     end
 })
 
@@ -77,7 +78,10 @@ ConfigTab:AddSlider({
     Max = 300,
     Default = 16,
     Callback = function(val)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = val
+        end
     end
 })
 
@@ -94,4 +98,4 @@ CreditsTab:AddButton({
     end
 })
 
-print("ApexExecutor carregado via loader.lua!")
+print("ApexExecutor atualizado: GhostHub removido!")
