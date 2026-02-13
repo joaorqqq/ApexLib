@@ -4,7 +4,6 @@
 
 ![Apex Elite Banner](https://img.shields.io/badge/APEX-ELITE-blueviolet?style=for-the-badge)
 ![Version](https://img.shields.io/badge/version-1.0-blue?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Roblox-red?style=flat-square)
 ![Mobile Support](https://img.shields.io/badge/mobile-supported-orange?style=flat-square)
 
@@ -293,7 +292,7 @@ A: Delta, Arceus X, Fluxus, Vega X, Hydrogen, Solara, Wave.
 A: Use names from the Poetic Color Motor (e.g., `"Crimson"`, `"Emerald"`).
 
 **Q: Is it open source?**  
-A: v1.0 is fully open source; v2.0 is currently restricted.
+A: v1.0 is public and free to use; v2.0 is currently restricted.
 
 **Q: Does it support JSON saving?**  
 A: Yes, built-in auto-save for configs.
@@ -393,9 +392,19 @@ We welcome contributions! Here's how:
 
 ---
 
-## 📄 License
+## 📜 License & Usage
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+**Apex Elite Library v1.0** is free to use for personal and commercial script projects.
+
+### Terms of Use
+
+- ✅ Use in your script hubs
+- ✅ Modify for your needs
+- ✅ Share with proper credit
+- ❌ Do not claim as your own work
+- ❌ Do not sell the library itself
+
+**Please give credit to joaorqqq when using this library.**
 
 ---
 
@@ -406,7 +415,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/H6pWukrA7)
 
 **Join our community for:**
-- 🎁 Giveaways & v2.0 early access
+- 🎁 Giv
 - 💡 Feature suggestions
 - 🐛 Bug reports
 - 🤝 Team applications
