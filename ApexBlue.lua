@@ -1,42 +1,91 @@
 --[[
-    APEX EXECUTOR - FINAL BLUE EDITION
-    Recursos: Neon Intro, Glow Effect, TDS, Human TTS
+    APEX EXECUTOR - BLUE EDITION (ELITE FULL)
+    Powered by: Apex Elite Library v1 (Public)
+    Add-ons: Combat, Visuals, Movement, TTS & Intro
     Desenvolvido por: joaorqqq
 --]]
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local Camera = workspace.CurrentCamera
 
--- [[ MOTOR DE VOZ HUMANA (TTS) ]]
+-- [[ VARIÁVEIS DE CONTROLE ]]
+_G.AimbotEnabled = false
+_G.AimbotSmoothness = 0.3
+_G.ESPEnabled = false
+_G.TeamCheck = true
+_G.FlyEnabled = false
+_G.NoclipEnabled = false
+local FlySpeed = 50
+
+-- [[ MOTOR DE VOZ HUMANA (A-PEX PRONUNCIATION) ]]
 local function Say(text)
-    local url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-US&q=" .. game:GetService("HttpService"):UrlEncode(text)
+    local url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-br&q=" .. HttpService:UrlEncode(text)
     local sound = Instance.new("Sound", game:GetService("SoundService"))
     sound.SoundId = url
-    sound.Volume = 3
+    sound.Volume = 5
     sound:Play()
     sound.Ended:Connect(function() sound:Destroy() end)
 end
 
--- [[ INTRO COMPLETA COM NEON GLOW & TDS ]]
+-- [[ LÓGICA DE AIMBOT ]]
+local function GetClosestPlayer()
+    local shortestDistance = math.huge
+    local closestPlayer = nil
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+            if _G.TeamCheck and v.Team == LocalPlayer.Team then continue end
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+            if magnitude < shortestDistance then
+                closestPlayer = v
+                shortestDistance = magnitude
+            end
+        end
+    end
+    return closestPlayer
+end
+
+RunService.RenderStepped:Connect(function()
+    if _G.AimbotEnabled then
+        local target = GetClosestPlayer()
+        if target and target.Character then
+            local lookAt = target.Character.HumanoidRootPart.Position
+            Camera.CFrame = Camera.CFrame:Lerp(CFrame.new(Camera.CFrame.Position, lookAt), _G.AimbotSmoothness)
+        end
+    end
+end)
+
+-- [[ LÓGICA DE NOCLIP ]]
+RunService.Stepped:Connect(function()
+    if _G.NoclipEnabled and LocalPlayer.Character then
+        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+end)
+
+-- [[ INTRO COMPLETA (FADE FULLSCREEN) ]]
 local function RunApexIntro()
     local sg = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-    sg.Name = "ApexIntroUI"
+    sg.IgnoreGuiInset = true
     sg.DisplayOrder = 1000
     
     local main = Instance.new("Frame", sg)
     main.Size = UDim2.new(1, 0, 1, 0)
     main.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
-    main.ZIndex = 10
+    main.BorderSizePixel = 0
     
-    -- Efeito de Brilho (Neon Glow) no fundo
     local glow = Instance.new("ImageLabel", main)
-    glow.Name = "Glow"
     glow.Size = UDim2.new(0, 0, 0, 0)
     glow.Position = UDim2.new(0.5, 0, 0.5, 0)
     glow.AnchorPoint = Vector2.new(0.5, 0.5)
     glow.BackgroundTransparency = 1
-    glow.Image = "rbxassetid://13426210452" -- Textura de luz suave
+    glow.Image = "rbxassetid://13426210452"
     glow.ImageColor3 = Color3.fromRGB(0, 170, 255)
     glow.ImageTransparency = 0.5
     
@@ -48,6 +97,7 @@ local function RunApexIntro()
     title.Text = "APEX"
     title.Font = Enum.Font.Code
     title.TextSize = 100
+    title.TextColor3 = Color3.new(1,1,1)
     title.TextTransparency = 1
     
     local grad = Instance.new("UIGradient", title)
@@ -55,56 +105,85 @@ local function RunApexIntro()
         ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 120, 255)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
     })
-    
-    local tds = Instance.new("TextLabel", main)
-    tds.Size = UDim2.new(1, 0, 0.05, 0)
-    tds.Position = UDim2.new(0.5, 0, 0.6, 0)
-    tds.AnchorPoint = Vector2.new(0.5, 0.5)
-    tds.BackgroundTransparency = 1
-    tds.Text = "SYSTEM INITIALIZED: " .. os.date("%H:%M:%S")
-    tds.Font = Enum.Font.SourceSansLight
-    tds.TextSize = 20
-    tds.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tds.TextTransparency = 1
 
-    -- Sequência de Animação
     task.spawn(function()
-        -- Entrada
+        Say("Welcome A-pex tool executor")
         TweenService:Create(title, TweenInfo.new(1.5), {TextTransparency = 0, TextSize = 130}):Play()
-        TweenService:Create(glow, TweenInfo.new(1.5), {Size = UDim2.new(0, 600, 0, 600), ImageTransparency = 0.2}):Play()
-        Say("Welcome, Apex Tool Executor")
-        
-        task.wait(0.5)
-        TweenService:Create(tds, TweenInfo.new(1), {TextTransparency = 0}):Play()
-        
-        -- Efeito de Pulsar Neon
-        for i = 1, 3 do
-            TweenService:Create(glow, TweenInfo.new(0.5), {ImageTransparency = 0.6}):Play()
-            task.wait(0.5)
-            TweenService:Create(glow, TweenInfo.new(0.5), {ImageTransparency = 0.2}):Play()
-            task.wait(0.5)
-        end
-        
-        -- Saída
-        TweenService:Create(title, TweenInfo.new(1), {TextTransparency = 1}):Play()
-        TweenService:Create(tds, TweenInfo.new(0.8), {TextTransparency = 1}):Play()
+        TweenService:Create(glow, TweenInfo.new(1.5), {Size = UDim2.new(0, 800, 0, 800), ImageTransparency = 0.2}):Play()
+        task.wait(3.5)
         TweenService:Create(main, TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
+        TweenService:Create(title, TweenInfo.new(1), {TextTransparency = 1}):Play()
         TweenService:Create(glow, TweenInfo.new(1), {ImageTransparency = 1}):Play()
-        task.wait(1.1)
+        task.wait(1)
         sg:Destroy()
     end)
 end
 
--- Inicia o Caos
+-- Iniciar Intro
 RunApexIntro()
-task.wait(2)
 
--- [[ CARREGAMENTO DA INTERFACE ]]
+-- [[ CARREGAMENTO DA V1 PÚBLICA ]]
 local Success, ApexLib = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/loader.lua"))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/ApexLib.lua"))()
 end)
 
 if not Success then return end
+
+local Window = ApexLib:CreateWindow({
+    Title = "ApexExecutor | Blue Edition 💙",
+    Name = "Apex_Elite_v1",
+    Keybind = Enum.KeyCode.RightControl 
+})
+
+local Combat = Window:AddTab("Combat")
+local Visuals = Window:AddTab("Visuals")
+local PlayerTab = Window:AddTab("Player")
+local Scripts = Window:AddTab("Scripts")
+
+-- [[ COMBAT ]]
+Combat:AddToggle({
+    Title = "Aimbot Lock",
+    Callback = function(v) _G.AimbotEnabled = v; Say(v and "Aimbot on" or "Aimbot off") end
+})
+Combat:AddSlider({
+    Title = "Smoothness",
+    Min = 1, Max = 10, Default = 3,
+    Callback = function(v) _G.AimbotSmoothness = v/10 end
+})
+Combat:AddToggle({Title = "Team Check", Default = true, Callback = function(v) _G.TeamCheck = v end})
+
+-- [[ VISUALS ]]
+Visuals:AddToggle({
+    Title = "ESP Highlight",
+    Callback = function(state)
+        _G.ESPEnabled = state
+        task.spawn(function()
+            while _G.ESPEnabled do
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and not v.Character:FindFirstChild("ApexESP") then
+                        local h = Instance.new("Highlight", v.Character)
+                        h.Name = "ApexESP"; h.FillColor = Color3.fromRGB(0, 120, 255)
+                    end
+                end
+                task.wait(1)
+            end
+            for _, v in pairs(Players:GetPlayers()) do if v.Character and v.Character:FindFirstChild("ApexESP") then v.Character.ApexESP:Destroy() end end
+        end)
+    end
+})
+
+-- [[ PLAYER MODS ]]
+PlayerTab:AddSlider({Title = "WalkSpeed", Min = 16, Max = 500, Default = 16, Callback = function(v) if LocalPlayer.Character then LocalPlayer.Character.Humanoid.WalkSpeed = v end end})
+PlayerTab:AddToggle({Title = "Noclip", Callback = function(v) _G.NoclipEnabled = v; Say(v and "Noclip on" or "Noclip off") end})
+PlayerTab:AddToggle({Title = "Fly", Callback = function(v) _G.FlyEnabled = v; Say(v and "Fly on" or "Fly off") end})
+
+-- [[ SCRIPTS TAB ]]
+local scriptText = ""
+Scripts:AddInput({Title = "Executor", Placeholder = "Script aqui...", Callback = function(t) scriptText = t end})
+Scripts:AddButton({Title = "EXECUTAR", Color = "blue", Callback = function() if scriptText ~= "" then loadstring(scriptText)() end end})
+Scripts:AddButton({Title = "🌪️ FTAP Hub", Color = "celeste", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/FTAPHub.lua"))() end})
+
+print("Apex Elite carregado!")
 
 local Window = ApexLib:CreateWindow({
     Title = "ApexExecutor | Blue Edition 💙",
