@@ -10,19 +10,11 @@
     ==========================================================================
     [ PROJECT INFO ]
     --------------------------------------------------------------------------
-    ● Name:       Apex Elite Library
-    ● Version:    v1 (Official Release)
+    ● Name:       Apex Elite Library (ApexUiLib)
+    ● Version:    v1 (Official Full Release)
     ● Status:     Universal Support (Mobilianos & Robloxianos)
     ● Creator:    joaorqqq
-    ● Location:   Salvador, Bahia, Brazil
-    --------------------------------------------------------------------------
-    [ COMMUNITY & SUPPORT ]
-    --------------------------------------------------------------------------
-    ● Discord:    https://discord.gg/H6pWukrA7
-    ● GitHub:     github.com/joaorqqq/ApexLib
     ==========================================================================
-    
-    "A library built by a user, for the users. Breaking the limits of UI."
 --]]
 
 local Apex = {}
@@ -53,7 +45,7 @@ local function LoadConfig(name)
     return nil
 end
 
--- [[ POETIC COLOR MOTOR (v1) ]]
+-- [[ POETIC COLOR MOTOR (41 CORES) ]]
 local ColorMap = {
     ["white"] = Color3.fromRGB(255, 255, 255), ["black"] = Color3.fromRGB(15, 15, 15),
     ["gray"] = Color3.fromRGB(128, 128, 128), ["silver"] = Color3.fromRGB(192, 192, 192),
@@ -95,16 +87,154 @@ local function MakeDraggable(topbar, object)
     UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
 end
 
--- [[ WATERMARK & ANTI-TAMPER ]]
-local function CreateWatermark(parentUI)
-    local Watermark = Instance.new("TextButton")
-    Watermark.Name = "Apex_Elite_Watermark"
-    Watermark.Parent = parentUI
-    Watermark.Size = UDim2.new(0, 220, 0, 25)
-    Watermark.Position = UDim2.new(0, 10, 1, -35)
-    Watermark.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    Watermark.BackgroundTransparency = 0.3
-    Watermark.Text = "🌑 Apex Elite | Click to Copy Discord"
+function Apex:CreateWindow(config)
+    local self = setmetatable({}, Apex)
+    self.Title = config.Title or "Apex Elite v1"
+    self.ConfigName = config.Name or "ApexConfig"
+    self.SavedData = LoadConfig(self.ConfigName) or {}
+    self.Keybind = config.Keybind or Enum.KeyCode.RightControl
+
+    local UI = Instance.new("ScreenGui", CoreGui); UI.Name = "Apex_Elite_" .. math.random(100,999)
+
+    local Main = Instance.new("Frame", UI)
+    Main.Size = UDim2.new(0, 550, 0, 420); Main.Position = UDim2.new(0.5, -275, 0.5, -210)
+    Main.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Main.BorderSizePixel = 0
+    Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
+    
+    local TopBar = Instance.new("Frame", Main)
+    TopBar.Size = UDim2.new(1, 0, 0, 35); TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Instance.new("UICorner", TopBar); MakeDraggable(TopBar, Main)
+
+    local TitleLabel = Instance.new("TextLabel", TopBar)
+    TitleLabel.Text = "  " .. self.Title; TitleLabel.Size = UDim2.new(1, 0, 1, 0); TitleLabel.BackgroundTransparency = 1
+    TitleLabel.TextColor3 = Color3.new(1,1,1); TitleLabel.Font = "GothamBold"; TitleLabel.TextXAlignment = "Left"
+
+    local SearchBar = Instance.new("TextBox", Main)
+    SearchBar.Size = UDim2.new(1, -20, 0, 30); SearchBar.Position = UDim2.new(0, 10, 0, 45)
+    SearchBar.BackgroundColor3 = Color3.fromRGB(18, 18, 18); SearchBar.PlaceholderText = "🔍 Search components..."
+    SearchBar.TextColor3 = Color3.new(1, 1, 1); SearchBar.Font = "GothamItalic"; Instance.new("UICorner", SearchBar)
+
+    local TabBar = Instance.new("Frame", Main)
+    TabBar.Size = UDim2.new(1, -20, 0, 30); TabBar.Position = UDim2.new(0, 10, 0, 85); TabBar.BackgroundTransparency = 1
+    local TabLayout = Instance.new("UIListLayout", TabBar); TabLayout.FillDirection = "Horizontal"; TabLayout.Padding = UDim.new(0, 5)
+
+    local Container = Instance.new("Frame", Main)
+    Container.Position = UDim2.new(0, 10, 0, 120); Container.Size = UDim2.new(1, -20, 1, -130); Container.BackgroundTransparency = 1
+
+    SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+        local txt = SearchBar.Text:lower()
+        for _, page in pairs(Container:GetChildren()) do
+            for _, item in pairs(page:GetChildren()) do
+                if item:IsA("Frame") or item:IsA("TextButton") then
+                    local label = item:FindFirstChildOfClass("TextLabel") or item
+                    item.Visible = label.Text:lower():find(txt) ~= nil
+                end
+            end
+        end
+    end)
+
+    function self:AddTab(name)
+        local tabObj = {}
+        local Page = Instance.new("ScrollingFrame", Container)
+        Page.Size = UDim2.new(1, 0, 1, 0); Page.BackgroundTransparency = 1; Page.Visible = false; Page.ScrollBarThickness = 2
+        local PageLayout = Instance.new("UIListLayout", Page); PageLayout.Padding = UDim.new(0, 6)
+        PageLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() Page.CanvasSize = UDim2.new(0,0,0,PageLayout.AbsoluteContentSize.Y) end)
+
+        local TBtn = Instance.new("TextButton", TabBar)
+        TBtn.Size = UDim2.new(0, 100, 1, 0); TBtn.Text = name; TBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        TBtn.TextColor3 = Color3.new(1,1,1); TBtn.Font = "GothamMedium"; Instance.new("UICorner", TBtn)
+
+        TBtn.MouseButton1Click:Connect(function()
+            for _, v in pairs(Container:GetChildren()) do v.Visible = false end
+            for _, b in pairs(TabBar:GetChildren()) do if b:IsA("TextButton") then b.BackgroundColor3 = Color3.fromRGB(25, 25, 25) end end
+            Page.Visible = true; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        end)
+
+        function tabObj:AddButton(data)
+            local cor = ColorMap[string.lower(data.Color or "graphite")] or ColorMap["graphite"]
+            local b = Instance.new("TextButton", Page)
+            b.Size = UDim2.new(1, -5, 0, 35); b.BackgroundColor3 = cor; b.Text = data.Title
+            b.TextColor3 = Color3.new(1,1,1); b.Font = "GothamBold"; Instance.new("UICorner", b)
+            b.MouseButton1Click:Connect(data.Callback)
+        end
+
+        function tabObj:AddToggle(data)
+            local flag = data.Flag or data.Title
+            local state = self.SavedData[flag] or data.Default or false
+            local tFrame = Instance.new("Frame", Page)
+            tFrame.Size = UDim2.new(1, -5, 0, 40); tFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", tFrame)
+            local label = Instance.new("TextLabel", tFrame)
+            label.Text = "  " .. data.Title; label.Size = UDim2.new(1, 0, 1, 0); label.BackgroundTransparency = 1; label.TextColor3 = Color3.new(1,1,1); label.TextXAlignment = "Left"
+            local switch = Instance.new("TextButton", tFrame)
+            switch.Size = UDim2.new(0, 35, 0, 18); switch.Position = UDim2.new(1, -45, 0.25, 0); switch.Text = ""
+            switch.BackgroundColor3 = state and Color3.fromRGB(0, 255, 136) or Color3.fromRGB(45, 45, 45); Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
+            switch.MouseButton1Click:Connect(function()
+                state = not state
+                TweenService:Create(switch, info, {BackgroundColor3 = state and Color3.fromRGB(0, 255, 136) or Color3.fromRGB(45, 45, 45)}):Play()
+                self.SavedData[flag] = state; SaveConfig(self.ConfigName, self.SavedData)
+                data.Callback(state)
+            end)
+        end
+
+        function tabObj:AddSlider(data)
+            local flag = data.Flag or data.Title
+            local savedVal = self.SavedData[flag] or data.Default or data.Min
+            local sFrame = Instance.new("Frame", Page)
+            sFrame.Size = UDim2.new(1, -5, 0, 50); sFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", sFrame)
+            local title = Instance.new("TextLabel", sFrame)
+            title.Text = "  " .. data.Title .. ": " .. savedVal; title.Size = UDim2.new(1, 0, 0.5, 0); title.BackgroundTransparency = 1; title.TextColor3 = Color3.new(1,1,1); title.TextXAlignment = "Left"
+            local bar = Instance.new("Frame", sFrame)
+            bar.Size = UDim2.new(0.9, 0, 0, 4); bar.Position = UDim2.new(0.05, 0, 0.75, 0); bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45); Instance.new("UICorner", bar)
+            local fill = Instance.new("Frame", bar)
+            fill.Size = UDim2.new((savedVal - data.Min) / (data.Max - data.Min), 0, 1, 0); fill.BackgroundColor3 = Color3.fromRGB(0, 255, 136); Instance.new("UICorner", fill)
+            
+            local function update(input)
+                local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+                local val = math.floor(data.Min + (data.Max - data.Min) * pos)
+                fill.Size = UDim2.new(pos, 0, 1, 0); title.Text = "  " .. data.Title .. ": " .. val
+                self.SavedData[flag] = val; SaveConfig(self.ConfigName, self.SavedData)
+                data.Callback(val)
+            end
+            bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
+                local conn = UIS.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then update(input) end end)
+                UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then conn:Disconnect() end end)
+            end end)
+        end
+
+        function tabObj:AddInput(data)
+            local box = Instance.new("TextBox", Page)
+            box.Size = UDim2.new(1, -5, 0, data.Height or 40); box.BackgroundColor3 = Color3.fromRGB(18, 18, 18); box.Text = ""
+            box.PlaceholderText = data.Placeholder or "Script aqui..."; box.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", box)
+            box.FocusLost:Connect(function() data.Callback(box.Text) end)
+        end
+
+        if not self.CurrentTab then Page.Visible = true; self.CurrentTab = Page; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) end
+        return tabObj
+    end
+    return self
+end
+
+return Apex
+            bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
+                local conn = UIS.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then update(input) end end)
+                UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then conn:Disconnect() end end)
+            end end)
+        end
+
+        function tabObj:AddInput(data)
+            local box = Instance.new("TextBox", Page)
+            box.Size = UDim2.new(1, -5, 0, data.Height or 40); box.BackgroundColor3 = Color3.fromRGB(18, 18, 18); box.Text = ""
+            box.PlaceholderText = data.Placeholder or "Script aqui..."; box.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", box)
+            box.FocusLost:Connect(function() data.Callback(box.Text) end)
+        end
+
+        if not self.CurrentTab then Page.Visible = true; self.CurrentTab = Page; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) end
+        return tabObj
+    end
+    return self
+end
+
+return Apex
     Watermark.TextColor3 = Color3.new(1, 1, 1)
     Watermark.Font = "GothamMedium"
     Watermark.TextSize = 11
