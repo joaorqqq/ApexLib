@@ -57,7 +57,7 @@ _G.ApexFTAP = {
 
 -- [[ CARREGAR BIBLIOTECA APEX ]]
 local Success, ApexLib = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/main/ApexLib.lua"))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/ApexLib.lua"))()
 end)
 
 if not Success then 
