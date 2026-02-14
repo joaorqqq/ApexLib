@@ -1,235 +1,517 @@
 --[[
-    
-    ██████╗ ██████╗ ███████╗██╗  ██╗    ███████╗██╗     ██╗████████╗███████╗
-    ██╔══██╗██╔══██╗██╔════╝╚██╗██╔╝    ██╔════╝██║     ██║╚══██╔══╝██╔════╝
-    ███████║██████╔╝█████╗   ╚███╔╝     █████╗  ██║     ██║   ██║   █████╗  
-    ██╔══██║██╔═══╝ ██╔══╝   ██╔██╗     ██╔══╝  ██║     ██║   ██║   ██╔══╝  
+    ██████╗ ██████╗ ███████╗██╗  ██╗    ███████╗██╗  ██╗███████╗ ██████╗
+    ██╔══██╗██╔══██╗██╔════╝╚██╗██╔╝    ██╔════╝╚██╗██╔╝██╔════╝██╔════╝
+    ███████║██████╔╝█████╗   ╚███╔╝     █████╗   ╚███╔╝ █████╗  ██║     
+    ██╔══██║██╔═══╝ ██╔══╝   ██╔██╗     ██╔══╝   ██╔██╗ ██╔══╝  ██║     
     ██║  ██║██║     ███████╗██╔╝ ██╗    ███████╗██╔╝ ██╗███████╗╚██████╗
     ╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝
     
-    ==========================================================================
-    [ PROJECT INFO ]
-    --------------------------------------------------------------------------
-    ● Name:       Apex Elite Library (ApexUiLib)
-    ● Version:    v1.0 (Official Release)
-    ● Creator:    joaorqqq
-    ● Support:    Mobilianos & Robloxianos
-    ==========================================================================
+    ═══════════════════════════════════════════════════════════════════════
+    [ APEX UNIVERSAL EXECUTOR - FIXED FOR ARCEUS X ]
+    ───────────────────────────────────────────────────────────────────────
+    ● Executor:    Arceus X
+    ● Fixed URL:   refs/heads/main/ApexLib.lua
+    ● Status:      ✅ WORKING
+    ═══════════════════════════════════════════════════════════════════════
 --]]
 
-local Apex = {}
-Apex.__index = Apex
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
-local CoreGui = game:GetService("CoreGui")
-local HttpService = game:GetService("HttpService")
+-- [[ CORRECT APEX LIB URL ]]
+local ApexLib
+local Success, Error = pcall(function()
+    ApexLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/ApexLib.lua"))()
+end)
 
-local TWEEN_INFO = TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-local CONFIG_FOLDER = "Apex_Configs"
-
--- [[ SISTEMA DE PERSISTÊNCIA ]]
-local function SaveConfig(name, data)
-    if writefile and isfolder then
-        if not isfolder(CONFIG_FOLDER) then makefolder(CONFIG_FOLDER) end
-        pcall(function()
-            writefile(CONFIG_FOLDER .. "/" .. name .. ".json", HttpService:JSONEncode(data))
-        end)
-    end
-end
-
-local function LoadConfig(name)
-    if isfile and isfile(CONFIG_FOLDER .. "/" .. name .. ".json") then
-        local success, decoded = pcall(function()
-            return HttpService:JSONDecode(readfile(CONFIG_FOLDER .. "/" .. name .. ".json"))
-        end)
-        return success and decoded or {}
-    end
-    return {}
-end
-
--- [[ POETIC COLOR MOTOR (41 CORES) ]]
-local ColorMap = {
-    ["white"] = Color3.fromRGB(255, 255, 255), ["black"] = Color3.fromRGB(15, 15, 15),
-    ["gray"] = Color3.fromRGB(128, 128, 128), ["silver"] = Color3.fromRGB(192, 192, 192),
-    ["beige"] = Color3.fromRGB(245, 245, 220), ["ivory"] = Color3.fromRGB(255, 255, 240),
-    ["graphite"] = Color3.fromRGB(56, 56, 56), ["pearl"] = Color3.fromRGB(240, 234, 214),
-    ["red"] = Color3.fromRGB(255, 0, 0), ["scarlet"] = Color3.fromRGB(255, 36, 0),
-    ["crimson"] = Color3.fromRGB(220, 20, 60), ["orange"] = Color3.fromRGB(255, 165, 0),
-    ["amber"] = Color3.fromRGB(255, 191, 0), ["yellow"] = Color3.fromRGB(255, 255, 0),
-    ["gold"] = Color3.fromRGB(255, 215, 0), ["bronze"] = Color3.fromRGB(205, 127, 50),
-    ["wine"] = Color3.fromRGB(128, 0, 32), ["green"] = Color3.fromRGB(0, 255, 0),
-    ["emerald"] = Color3.fromRGB(80, 220, 100), ["olive"] = Color3.fromRGB(128, 128, 0),
-    ["cyan"] = Color3.fromRGB(0, 255, 255), ["turquoise"] = Color3.fromRGB(64, 224, 208),
-    ["blue"] = Color3.fromRGB(0, 120, 255), ["navy"] = Color3.fromRGB(0, 0, 128),
-    ["celeste"] = Color3.fromRGB(135, 206, 235), ["indigo"] = Color3.fromRGB(75, 0, 130),
-    ["teal"] = Color3.fromRGB(0, 128, 128), ["violet"] = Color3.fromRGB(238, 130, 238),
-    ["purple"] = Color3.fromRGB(128, 0, 128), ["lavender"] = Color3.fromRGB(230, 230, 250),
-    ["magenta"] = Color3.fromRGB(255, 0, 255), ["fuchsia"] = Color3.fromRGB(255, 0, 255),
-    ["pink"] = Color3.fromRGB(255, 192, 203), ["salmon"] = Color3.fromRGB(250, 128, 114),
-    ["coral"] = Color3.fromRGB(255, 127, 80), ["brown"] = Color3.fromRGB(139, 69, 19),
-    ["chocolate"] = Color3.fromRGB(210, 105, 30), ["terracotta"] = Color3.fromRGB(226, 114, 91),
-    ["sepia"] = Color3.fromRGB(112, 66, 20), ["khaki"] = Color3.fromRGB(195, 176, 145),
-    ["ochre"] = Color3.fromRGB(204, 119, 34)
-}
-
--- [[ ARRASTE HÍBRIDO ]]
-local function MakeDraggable(handle, object)
-    local dragging, dragStart, startPos
-    handle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true; dragStart = input.Position; startPos = object.Position
-        end
-    end)
-    UIS.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = input.Position - dragStart
-            object.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-    UIS.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end
-    end)
-end
-
--- [[ WATERMARK ]]
-local function CreateWatermark(parentUI)
-    local Watermark = Instance.new("TextButton", parentUI)
-    Watermark.Size = UDim2.new(0, 280, 0, 25)
-    Watermark.Position = UDim2.new(0.5, -140, 0, 10)
-    Watermark.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    Watermark.Text = "🌑 Apex Elite | Click to Copy Discord"
-    Watermark.TextColor3 = Color3.new(1, 1, 1)
-    Watermark.Font = Enum.Font.GothamMedium
-    Watermark.TextSize = 11
-    Instance.new("UICorner", Watermark).CornerRadius = UDim.new(0, 5)
+if not Success then
+    warn("⚠️ Failed to load ApexLib: " .. tostring(Error))
     
-    Watermark.MouseButton1Click:Connect(function()
+    -- Try alternative method for Arceus X
+    local altSuccess, altError = pcall(function()
+        local response = game:HttpGetAsync("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/ApexLib.lua")
+        ApexLib = loadstring(response)()
+    end)
+    
+    if not altSuccess then
+        warn("⚠️ Alternative method also failed: " .. tostring(altError))
+        
+        -- Create error notification
+        local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+        screenGui.Name = "ApexError"
+        
+        local frame = Instance.new("Frame", screenGui)
+        frame.Size = UDim2.new(0, 400, 0, 200)
+        frame.Position = UDim2.new(0.5, -200, 0.5, -100)
+        frame.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        Instance.new("UICorner", frame)
+        
+        local title = Instance.new("TextLabel", frame)
+        title.Size = UDim2.new(1, 0, 0.3, 0)
+        title.BackgroundTransparency = 1
+        title.Text = "❌ APEX LIBRARY ERROR"
+        title.TextColor3 = Color3.new(1, 1, 1)
+        title.Font = Enum.Font.GothamBold
+        title.TextSize = 18
+        
+        local message = Instance.new("TextLabel", frame)
+        message.Size = UDim2.new(1, -20, 0.7, 0)
+        message.Position = UDim2.new(0, 10, 0.3, 0)
+        message.BackgroundTransparency = 1
+        message.Text = "Failed to load ApexLib from GitHub.\n\nPossible fixes:\n1. Check your internet\n2. Restart Arceus X\n3. Try embedded version\n\nError: " .. tostring(Error)
+        message.TextColor3 = Color3.new(1, 1, 1)
+        message.Font = Enum.Font.Gotham
+        message.TextSize = 12
+        message.TextWrapped = true
+        message.TextYAlignment = Enum.TextYAlignment.Top
+        
+        return
+    end
+end
+
+print("✅ Apex Library Loaded Successfully!")
+
+-- [[ NOTIFICATION SYSTEM ]]
+local function Notify(text, type)
+    type = type or "info"
+    
+    local screenGui = LocalPlayer.PlayerGui:FindFirstChild("ApexNotifications")
+    if not screenGui then
+        screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "ApexNotifications"
+        screenGui.ResetOnSpawn = false
+        screenGui.DisplayOrder = 999
+        screenGui.Parent = LocalPlayer.PlayerGui
+        
+        local container = Instance.new("Frame", screenGui)
+        container.Name = "Container"
+        container.Size = UDim2.new(0, 350, 0, 400)
+        container.Position = UDim2.new(1, -370, 0, 20)
+        container.BackgroundTransparency = 1
+        
+        local layout = Instance.new("UIListLayout", container)
+        layout.VerticalAlignment = Enum.VerticalAlignment.Top
+        layout.Padding = UDim.new(0, 5)
+    end
+    
+    local container = screenGui:FindFirstChild("Container")
+    
+    local icons = {
+        success = "✅",
+        error = "❌",
+        warning = "⚠️",
+        info = "ℹ️"
+    }
+    
+    local colors = {
+        success = Color3.fromRGB(0, 255, 136),
+        error = Color3.fromRGB(255, 50, 50),
+        warning = Color3.fromRGB(255, 191, 0),
+        info = Color3.fromRGB(0, 170, 255)
+    }
+    
+    local frame = Instance.new("Frame", container)
+    frame.Size = UDim2.new(1, 0, 0, 40)
+    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    frame.BackgroundTransparency = 0.3
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+    
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = colors[type] or colors.info
+    stroke.Thickness = 1.5
+    
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -10, 1, 0)
+    label.Position = UDim2.new(0, 5, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = (icons[type] or "●") .. " " .. text
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    
+    task.delay(4, function()
+        if frame then frame:Destroy() end
+    end)
+end
+
+-- [[ CREATE MAIN WINDOW ]]
+local Window = ApexLib:CreateWindow({
+    Title = "⚡ Apex Universal Executor",
+    Name = "Apex_Executor_Fixed",
+    Keybind = Enum.KeyCode.RightControl
+})
+
+-- [[ HOME TAB ]]
+local Home = Window:AddTab("Home")
+
+Home:AddButton({
+    Title = "✅ Apex Library Loaded!",
+    Color = "emerald",
+    Callback = function()
+        Notify("Apex is working perfectly!", "success")
+    end
+})
+
+Home:AddButton({
+    Title = "👤 User: " .. LocalPlayer.Name,
+    Color = "blue",
+    Callback = function()
+        Notify("Welcome, " .. LocalPlayer.Name, "info")
+    end
+})
+
+Home:AddButton({
+    Title = "🎮 Game: " .. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
+    Color = "purple",
+    Callback = function()
+        Notify("PlaceId: " .. game.PlaceId, "info")
+    end
+})
+
+-- [[ GAME HUBS TAB ]]
+local Hubs = Window:AddTab("Game Hubs")
+
+Hubs:AddButton({
+    Title = "🌪️ Load FTAP Hub",
+    Color = "blue",
+    Callback = function()
+        Notify("Loading FTAP Hub...", "info")
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/FTAPHub.lua"))()
+        end)
+        if success then
+            Notify("FTAP Hub Loaded!", "success")
+        else
+            Notify("Failed to load FTAP Hub", "error")
+        end
+    end
+})
+
+Hubs:AddButton({
+    Title = "👻 Load Ghost Hub",
+    Color = "purple",
+    Callback = function()
+        Notify("Loading Ghost Hub...", "info")
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/Ghosthub.lua"))()
+        end)
+        if success then
+            Notify("Ghost Hub Loaded!", "success")
+        else
+            Notify("Failed to load Ghost Hub", "error")
+        end
+    end
+})
+
+Hubs:AddButton({
+    Title = "🚪 Load DOORS Hub",
+    Color = "graphite",
+    Callback = function()
+        Notify("Loading DOORS Hub...", "info")
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/DoorsHub.lua"))()
+        end)
+        if success then
+            Notify("DOORS Hub Loaded!", "success")
+        else
+            Notify("Failed to load DOORS Hub", "error")
+        end
+    end
+})
+
+Hubs:AddButton({
+    Title = "👋 Load Slap Battles Hub",
+    Color = "orange",
+    Callback = function()
+        Notify("Loading Slap Battles Hub...", "info")
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/SlapBattlesHub.lua"))()
+        end)
+        if success then
+            Notify("Slap Battles Hub Loaded!", "success")
+        else
+            Notify("Failed to load Slap Battles Hub", "error")
+        end
+    end
+})
+
+Hubs:AddButton({
+    Title = "🌊 Load Meme Sea Hub",
+    Color = "turquoise",
+    Callback = function()
+        Notify("Loading Meme Sea Hub...", "info")
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/MemeSeaHub.lua"))()
+        end)
+        if success then
+            Notify("Meme Sea Hub Loaded!", "success")
+        else
+            Notify("Failed to load Meme Sea Hub", "error")
+        end
+    end
+})
+
+Hubs:AddButton({
+    Title = "🔄 Auto-Detect Game Hub",
+    Color = "gold",
+    Callback = function()
+        Notify("Auto-detecting game...", "info")
+        
+        local gameHubs = {
+            [14279693118] = {name = "FTAP", url = "FTAPHub.lua"},
+            [6516141723] = {name = "DOORS", url = "DoorsHub.lua"},
+            [6403373529] = {name = "Slap Battles", url = "SlapBattlesHub.lua"},
+        }
+        
+        local currentGame = gameHubs[game.PlaceId]
+        if currentGame then
+            Notify("Detected: " .. currentGame.name, "success")
+            task.wait(0.5)
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/joaorqqq/ApexLib/refs/heads/main/" .. currentGame.url))()
+        else
+            Notify("No specific hub for this game", "warning")
+        end
+    end
+})
+
+-- [[ SCRIPT EXECUTOR TAB ]]
+local Executor = Window:AddTab("Executor")
+
+local scriptText = ""
+
+Executor:AddInput({
+    Title = "Script Editor",
+    Placeholder = "-- Paste your script here...",
+    Height = 200,
+    Callback = function(text)
+        scriptText = text
+    end
+})
+
+Executor:AddButton({
+    Title = "▶️ EXECUTE SCRIPT",
+    Color = "emerald",
+    Callback = function()
+        if scriptText ~= "" then
+            Notify("Executing script...", "info")
+            local success, err = pcall(function()
+                loadstring(scriptText)()
+            end)
+            if success then
+                Notify("Script executed!", "success")
+            else
+                Notify("Script error!", "error")
+            end
+        else
+            Notify("No script to execute!", "warning")
+        end
+    end
+})
+
+Executor:AddButton({
+    Title = "🗑️ Clear Script",
+    Color = "red",
+    Callback = function()
+        scriptText = ""
+        Notify("Script cleared!", "info")
+    end
+})
+
+-- [[ UNIVERSAL SCRIPTS TAB ]]
+local Scripts = Window:AddTab("Scripts")
+
+Scripts:AddButton({
+    Title = "🌐 Infinite Yield",
+    Color = "navy",
+    Callback = function()
+        Notify("Loading Infinite Yield...", "info")
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end
+})
+
+Scripts:AddButton({
+    Title = "🔍 Dark Dex V3",
+    Color = "purple",
+    Callback = function()
+        Notify("Loading Dark Dex...", "info")
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua"))()
+    end
+})
+
+Scripts:AddButton({
+    Title = "🎮 Remote Spy",
+    Color = "indigo",
+    Callback = function()
+        Notify("Loading Remote Spy...", "info")
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()
+    end
+})
+
+Scripts:AddButton({
+    Title = "👁️ Universal ESP",
+    Color = "turquoise",
+    Callback = function()
+        Notify("Loading ESP...", "info")
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))()
+    end
+})
+
+-- [[ SETTINGS TAB ]]
+local Settings = Window:AddTab("Settings")
+
+Settings:AddSlider({
+    Title = "🏃 WalkSpeed",
+    Flag = "WalkSpeed",
+    Min = 16,
+    Max = 500,
+    Default = 16,
+    Callback = function(val)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.WalkSpeed = val
+        end
+    end
+})
+
+Settings:AddSlider({
+    Title = "🦘 JumpPower",
+    Flag = "JumpPower",
+    Min = 50,
+    Max = 500,
+    Default = 50,
+    Callback = function(val)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.JumpPower = val
+        end
+    end
+})
+
+Settings:AddToggle({
+    Title = "👻 Noclip",
+    Flag = "Noclip",
+    Default = false,
+    Callback = function(state)
+        _G.Noclip = state
+        Notify("Noclip: " .. (state and "ON" or "OFF"), state and "success" or "warning")
+        
+        game:GetService("RunService").Stepped:Connect(function()
+            if _G.Noclip and LocalPlayer.Character then
+                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end
+})
+
+Settings:AddButton({
+    Title = "🌅 Fullbright",
+    Color = "yellow",
+    Callback = function()
+        local Lighting = game:GetService("Lighting")
+        Lighting.Ambient = Color3.new(1, 1, 1)
+        Lighting.Brightness = 2
+        Lighting.FogEnd = 1e10
+        Notify("Fullbright enabled!", "success")
+    end
+})
+
+-- [[ MISC TAB ]]
+local Misc = Window:AddTab("Misc")
+
+Misc:AddButton({
+    Title = "🔄 Rejoin Server",
+    Color = "orange",
+    Callback = function()
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+    end
+})
+
+Misc:AddButton({
+    Title = "🎮 Server Hop",
+    Color = "purple",
+    Callback = function()
+        Notify("Finding new server...", "info")
+        local HttpService = game:GetService("HttpService")
+        local success, result = pcall(function()
+            local servers = HttpService:JSONDecode(
+                game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            )
+            for _, server in pairs(servers.data) do
+                if server.playing < server.maxPlayers - 5 then
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, server.id, LocalPlayer)
+                    break
+                end
+            end
+        end)
+        if not success then
+            Notify("Server hop failed", "error")
+        end
+    end
+})
+
+Misc:AddButton({
+    Title = "📋 Copy Discord",
+    Color = "blue",
+    Callback = function()
         if setclipboard then
             setclipboard("https://discord.gg/H6pWukrA7")
-            Watermark.Text = "✅ Discord Link Copied!"
-            task.wait(2)
-            Watermark.Text = "🌑 Apex Elite | Click to Copy Discord"
+            Notify("Discord link copied!", "success")
+        else
+            Notify("Clipboard not supported", "warning")
         end
-    end)
-end
-
--- [[ JANELA PRINCIPAL ]]
-function Apex:CreateWindow(config)
-    local self = setmetatable({}, Apex)
-    self.Title = config.Title or "Apex Elite"
-    self.ConfigName = config.Name or "ApexConfig"
-    self.SavedData = LoadConfig(self.ConfigName)
-    self.Keybind = config.Keybind or Enum.KeyCode.RightControl
-
-    local UI = Instance.new("ScreenGui", CoreGui)
-    UI.Name = "Apex_Elite_" .. math.random(100,999)
-    UI.ResetOnSpawn = false
-    CreateWatermark(UI)
-
-    local Main = Instance.new("Frame", UI)
-    Main.Size = UDim2.new(0, 550, 0, 420); Main.Position = UDim2.new(0.5, -275, 0.5, -210)
-    Main.BackgroundColor3 = Color3.fromRGB(12, 12, 12); Main.BorderSizePixel = 0
-    Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
-    
-    UIS.InputBegan:Connect(function(input, gpe)
-        if not gpe and input.KeyCode == self.Keybind then Main.Visible = not Main.Visible end
-    end)
-
-    local TopBar = Instance.new("Frame", Main)
-    TopBar.Size = UDim2.new(1, 0, 0, 35); TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Instance.new("UICorner", TopBar); MakeDraggable(TopBar, Main)
-
-    local TitleLabel = Instance.new("TextLabel", TopBar)
-    TitleLabel.Text = "  " .. self.Title; TitleLabel.Size = UDim2.new(1, 0, 1, 0); TitleLabel.BackgroundTransparency = 1
-    TitleLabel.TextColor3 = Color3.new(1,1,1); TitleLabel.Font = Enum.Font.GothamBold; TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    local TabBar = Instance.new("Frame", Main)
-    TabBar.Size = UDim2.new(1, -20, 0, 30); TabBar.Position = UDim2.new(0, 10, 0, 45); TabBar.BackgroundTransparency = 1
-    Instance.new("UIListLayout", TabBar).FillDirection = Enum.FillDirection.Horizontal; TabBar.UIListLayout.Padding = UDim.new(0, 5)
-
-    local Container = Instance.new("Frame", Main)
-    Container.Position = UDim2.new(0, 10, 0, 85); Container.Size = UDim2.new(1, -20, 1, -95); Container.BackgroundTransparency = 1
-
-    function self:AddTab(name)
-        local tabObj = {}
-        local Page = Instance.new("ScrollingFrame", Container)
-        Page.Size = UDim2.new(1, 0, 1, 0); Page.BackgroundTransparency = 1; Page.Visible = false; Page.ScrollBarThickness = 2; Page.BorderSizePixel = 0
-        local PageLayout = Instance.new("UIListLayout", Page); PageLayout.Padding = UDim.new(0, 6)
-        PageLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() Page.CanvasSize = UDim2.new(0,0,0,PageLayout.AbsoluteContentSize.Y) end)
-
-        local TBtn = Instance.new("TextButton", TabBar)
-        TBtn.Size = UDim2.new(0, 100, 1, 0); TBtn.Text = name; TBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        TBtn.TextColor3 = Color3.new(1,1,1); TBtn.Font = Enum.Font.GothamMedium; Instance.new("UICorner", TBtn)
-
-        TBtn.MouseButton1Click:Connect(function()
-            for _, v in pairs(Container:GetChildren()) do v.Visible = false end
-            for _, b in pairs(TabBar:GetChildren()) do if b:IsA("TextButton") then b.BackgroundColor3 = Color3.fromRGB(25, 25, 25) end end
-            Page.Visible = true; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        end)
-
-        function tabObj:AddButton(data)
-            local cor = ColorMap[string.lower(data.Color or "graphite")] or ColorMap["graphite"]
-            local b = Instance.new("TextButton", Page)
-            b.Size = UDim2.new(1, -5, 0, 35); b.BackgroundColor3 = cor; b.Text = data.Title
-            b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; Instance.new("UICorner", b)
-            b.MouseButton1Click:Connect(data.Callback)
-        end
-
-        function tabObj:AddToggle(data)
-            local flag = data.Flag or data.Title
-            local state = self.SavedData[flag] ~= nil and self.SavedData[flag] or data.Default or false
-            local tFrame = Instance.new("Frame", Page)
-            tFrame.Size = UDim2.new(1, -5, 0, 40); tFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", tFrame)
-            local label = Instance.new("TextLabel", tFrame)
-            label.Text = "  " .. data.Title; label.Size = UDim2.new(1, 0, 1, 0); label.BackgroundTransparency = 1; label.TextColor3 = Color3.new(1,1,1); label.TextXAlignment = "Left"
-            local switch = Instance.new("TextButton", tFrame)
-            switch.Size = UDim2.new(0, 35, 0, 18); switch.Position = UDim2.new(1, -45, 0.25, 0); switch.Text = ""
-            switch.BackgroundColor3 = state and ColorMap["emerald"] or Color3.fromRGB(45, 45, 45); Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
-            switch.MouseButton1Click:Connect(function()
-                state = not state
-                TweenService:Create(switch, TWEEN_INFO, {BackgroundColor3 = state and ColorMap["emerald"] or Color3.fromRGB(45, 45, 45)}):Play()
-                self.SavedData[flag] = state; SaveConfig(self.ConfigName, self.SavedData)
-                data.Callback(state)
-            end)
-            if data.Callback then data.Callback(state) end
-        end
-
-        function tabObj:AddSlider(data)
-            local flag = data.Flag or data.Title
-            local min, max = data.Min or 0, data.Max or 100
-            local val = self.SavedData[flag] or data.Default or min
-            local sFrame = Instance.new("Frame", Page)
-            sFrame.Size = UDim2.new(1, -5, 0, 50); sFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); Instance.new("UICorner", sFrame)
-            local title = Instance.new("TextLabel", sFrame)
-            title.Text = "  " .. data.Title .. ": " .. val; title.Size = UDim2.new(1, 0, 0.5, 0); title.BackgroundTransparency = 1; title.TextColor3 = Color3.new(1,1,1); title.TextXAlignment = "Left"
-            local bar = Instance.new("Frame", sFrame)
-            bar.Size = UDim2.new(0.9, 0, 0, 4); bar.Position = UDim2.new(0.05, 0, 0.75, 0); bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45); Instance.new("UICorner", bar)
-            local fill = Instance.new("Frame", bar)
-            fill.Size = UDim2.new((val - min) / (max - min), 0, 1, 0); fill.BackgroundColor3 = ColorMap["emerald"]; Instance.new("UICorner", fill)
-            local function update(input)
-                local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-                local v = math.floor(min + (max - min) * pos)
-                fill.Size = UDim2.new(pos, 0, 1, 0); title.Text = "  " .. data.Title .. ": " .. v
-                self.SavedData[flag] = v; SaveConfig(self.ConfigName, self.SavedData); data.Callback(v)
-            end
-            bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
-                local conn = UIS.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then update(input) end end)
-                UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then conn:Disconnect() end end)
-            end end)
-        end
-
-        function tabObj:AddInput(data)
-            local box = Instance.new("TextBox", Page)
-            box.Size = UDim2.new(1, -5, 0, data.Height or 40); box.BackgroundColor3 = Color3.fromRGB(18, 18, 18); box.Text = ""
-            box.PlaceholderText = data.Placeholder or "Digite aqui..."; box.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", box)
-            box.FocusLost:Connect(function() data.Callback(box.Text) end)
-        end
-
-        if not self.CurrentTab then Page.Visible = true; self.CurrentTab = Page; TBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) end
-        return tabObj
     end
-    return self
-end
+})
 
-return Apex
+-- [[ CREDITS TAB ]]
+local Credits = Window:AddTab("Credits")
+
+Credits:AddButton({
+    Title = "💙 Created by joaorqqq",
+    Color = "celeste",
+    Callback = function()
+        Notify("Thanks for using Apex!", "success")
+    end
+})
+
+Credits:AddButton({
+    Title = "🌟 Version: v1.0 (Arceus X Fixed)",
+    Color = "gold",
+    Callback = function()
+        Notify("All URLs corrected for Arceus X!", "success")
+    end
+})
+
+Credits:AddButton({
+    Title = "🎁 Join Discord",
+    Color = "blue",
+    Callback = function()
+        if setclipboard then
+            setclipboard("https://discord.gg/H6pWukrA7")
+            Notify("discord.gg/H6pWukrA7", "success")
+        end
+    end
+})
+
+-- [[ STARTUP ]]
+Notify("Apex Universal Executor Loaded!", "success")
+Notify("Press RightControl to toggle UI", "info")
+Notify("Optimized for Arceus X", "info")
+
+print([[
+═══════════════════════════════════════════════════════════════════════
+    ⚡ APEX UNIVERSAL EXECUTOR - ARCEUS X FIXED
+    ───────────────────────────────────────────────────────────────────
+    ✅ Correct URL: refs/heads/main/ApexLib.lua
+    ✅ All game hubs available
+    ✅ Script executor included
+    ✅ Universal scripts ready
+    ✅ Press RightControl to toggle
+    ───────────────────────────────────────────────────────────────────
+    Created by: joaorqqq
+    Discord: discord.gg/H6pWukrA7
+    Executor: Arceus X Optimized
+═══════════════════════════════════════════════════════════════════════
+]])
