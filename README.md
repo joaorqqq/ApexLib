@@ -9,7 +9,7 @@
 
 **A premium UI library for Roblox exploits - lightweight, modern, and extremely functional.**
 
-Specifically designed for **Mobilianos** (Mobile) and **Robloxianos** (PC).
+Specifically designed for Mobile and PC.
 
 [Discord](https://discord.gg/H6pWukrA7) • [Examples](#-quick-start) • [FAQ](#-faq)
 
