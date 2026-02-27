@@ -8,10 +8,10 @@
     ╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═════╝ 
     ═══════════════════════════════════════════════════════════════════════
     
-    [ APEX LIBRARY v5.0 - ULTIMATE PROFESSIONAL EDITION ]
+    [ APEX LIBRARY v1.0 - ULTIMATE PROFESSIONAL EDITION ]
     
     ───────────────────────────────────────────────────────────────────────
-    ● Version:        v5.0 Ultimate Professional
+    ● Version:        v1.0 Ultimate Professional
     ● Creator:        joaorqqq
     ● Lines of Code:  3000+ (Optimized & Production-Ready)
     ● Features:       100+ Professional Components
@@ -98,7 +98,7 @@
 
 local ApexLib = {}
 ApexLib.__index = ApexLib
-ApexLib.Version = "5.0.0"
+ApexLib.Version = "2.0.0"
 ApexLib.Author = "joaorqqq"
 ApexLib.BuildDate = os.date("%Y-%m-%d")
 
